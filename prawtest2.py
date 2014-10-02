@@ -17,6 +17,7 @@ r = praw.Reddit('PRAW Bot GVSU Comments with http link')
 
 #r.login()
 already_done = []
+csvout = []
 
 with open('test2.csv','wb') as fp:
 	a = csv.writer(fp, delimiter=',')
@@ -46,4 +47,5 @@ with open('test2.csv','wb') as fp:
 				#reply_world(comment)
 				#print i
 				print str(comment)
-				a.writerow(comment)
+				csvout.append(comment)
+				a.writerow(csvout)
