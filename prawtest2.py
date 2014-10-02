@@ -17,6 +17,7 @@ r = praw.Reddit('PRAW Bot GVSU Comments with http link')
 
 #r.login()
 already_done = []
+comments_found = []
 csvout = []
 
 with open('test2.csv','wb') as fp:
@@ -35,7 +36,7 @@ with open('test2.csv','wb') as fp:
 			msg = '[PRAW related thread](%s)' % submission.short_link
 			#r.send_message('spoelee11', 'PRAW Thread', msg)
 			already_done.append(submission.id)
-			print "Sent a message"
+			print "Found a message"
 		#time.sleep(1800)
 		i = 0
 		forest_comments = submission.comments
@@ -43,9 +44,17 @@ with open('test2.csv','wb') as fp:
 		for comment in flat_comments:
 			i = i + 1
 			print i
-			if str("http") in comment.body:
-				#reply_world(comment)
-				#print i
-				print str(comment)
-				csvout.append(comment)
-				a.writerow(csvout)
+			
+			try:
+				if str("http") in comment.body:
+					#reply_world(comment)
+					#print i
+					if comment.body not in comments_found:
+						print str(comment)
+						comments_found.append(comment)
+						csvout = []
+						csvout.append(comment)
+						a.writerow(csvout)
+			except:
+				print "No body for comment"
+				
