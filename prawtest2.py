@@ -9,9 +9,12 @@ import time
 import praw
 import csv
 
-r = praw.Reddit('PRAW related-question monitor by u/_Daimon_ v 1.0.'
-				'Url: https://praw.readthedocs.org/en/latest/'
-				'pages/writing_a_bot.html')
+#r = praw.Reddit('PRAW related-question monitor by u/_Daimon_ v 1.0.'
+#				'Url: https://praw.readthedocs.org/en/latest/'
+#				'pages/writing_a_bot.html')
+
+r = praw.Reddit('PRAW Bot GVSU Comments with http link')
+
 #r.login()
 already_done = []
 
@@ -42,5 +45,5 @@ with open('test2.csv','wb') as fp:
 			if str("http") in comment.body:
 				#reply_world(comment)
 				#print i
-				print comment
+				print str(comment)
 				a.writerow(comment)
