@@ -3,12 +3,18 @@ Question Discover Program
 
 Tutorial program for PRAW:
 See https://github.com/praw-dev/praw/wiki/Writing-A-Bot/
+
+Tutorial for Textblob
+http://textblob.readthedocs.org/en/dev/api_reference.html#api-classifiers
 """
 
 import time
 import praw
 import json
 #import csv
+
+from textblob import TextBlob
+from textblob.classifiers import NaiveBayesClassifier
 
 #r = praw.Reddit('PRAW related-question monitor by u/_Daimon_ v 1.0.'
 #				'Url: https://praw.readthedocs.org/en/latest/'
@@ -20,6 +26,21 @@ r = praw.Reddit('PRAW Bot GVSU Comments with http link')
 already_done = []
 comments_found = []
 csvout = []
+
+train = [
+     ('I love this sandwich.', 'pos'),
+     ('This is an amazing place!', 'pos'),
+     ('I feel very good about these beers.', 'pos'),
+     ('I do not like this restaurant', 'neg'),
+     ('I am tired of this stuff.', 'neg'),
+     ("I can't deal with this", 'neg'),
+     ("My boss is horrible.", "neg")
+]
+
+cl = NaiveBayesClassifier(train)
+cl.classify("I feel amazing")
+
+
 
 with open('test2.csv','wb') as fp:
 	#a = writer(fp, delimiter=',')
@@ -61,7 +82,7 @@ with open('test2.csv','wb') as fp:
 			flat_comments = praw.helpers.flatten_tree(submission.comments)
 			for comment in flat_comments:
 				i = i + 1
-				print i
+				#print i
 				try:
 					# sometimes there will be no text in the comment body
 					# so we need to catch the error/warning that happens
@@ -79,6 +100,10 @@ with open('test2.csv','wb') as fp:
 							fp.write(i + "th comment:")
 							fp.write(comment)
 							fp.write(" ")
+							blob = TextBlob(comment,classifier=cl)
+							for s in blob.sentences:
+								print s
+								print s.classify()
 							
 				except:
 					print "No body for comment"
