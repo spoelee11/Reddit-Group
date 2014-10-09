@@ -60,23 +60,19 @@ cl.update(new_train)
 
 print cl.classify("I feel amazing")
 
-accuracy = cl.accuracy(test + new_test)
-print("Accuracy: {0}".format(accuracy))
+#accuracy = cl.accuracy(test + new_test)
+#print("Accuracy: {0}".format(accuracy))
 
-cl.show_informative_features(10)
+#cl.show_informative_features(10)
 
 cl.update(reviews[201:500])
 
-#with open('test2.csv','wb') as fp:
+
 #first print
 fp = open('Links_v1.txt', 'wb')
 
 #second print
 sp = open('SentimentOut_v1.txt','wb')
-	#a = writer(fp, delimiter=',')
-    #data = ['Me', 'You','293', '219','54', '13']
-    #for x in data:
-    #    a.writerows(x)
 
 lookWords = ['Obama']
 subreddit = r.get_subreddit('Politics')
@@ -86,8 +82,6 @@ for submission in subreddit.get_new(limit=100):
 	has_lookWords = any(string in op_text for string in lookWords)
 	# Test if it contains a PRAW-related question
 	if submission.id not in already_done and has_lookWords:
-		#msg = '[Related thread](%s)' % submission.short_link
-		#r.send_message('spoelee11', 'PRAW Thread', msg)
 		already_done.add(submission.id)
 		print "Found a message with lookWord"
 		print submission.short_link
@@ -104,29 +98,25 @@ for submission in subreddit.get_new(limit=100):
 		for comment in flat_comments:
 			i = i +1
 			#sometimes there will be no text in the comment body
-				# so we need to catch the error/warning that happens
+			# so we need to catch the error/warning that happens
 			if "http" in comment.body:
-				#reply_world(comment)
 				print str(i) + "th one had a hyperlink!"
 				if comment.body not in comments_found:
 					print str(comment.body)
-					#comments_found.append(comment)
-			
-					#fp.write(str(i) + "th comment:")
-					#fp.write(comment.body)
-					#fp.write(" ")
 					blob = TextBlob(comment.body,classifier=cl)
 					sp.write(str(blob))
 					sp.write(str(blob.classify()))
-					#prob_dist = cl.prob_classify(blob.sentences)
 					prob_dist = cl.prob_classify(blob)
 					print("Pos Prob: "+ str(prob_dist.prob("pos")))
 					print("Neg Prob: "+ str(prob_dist.prob("neg")))
-					#for s in blob.sentences:
+					for s in blob.sentences:
 						#print s
 						#print s.classify()
-					#sp.write(str(s) + '\n')
-					#sp.write(str(s.classify())+'\n')
+						#sp.write(str(s) + '\n')
+						sp.write(str(s)+'\n')
+						sp.write(str(s.sentiment.polarity)+'\n')
+						#sp.write(str(s.classify())+'\n')
+					sp.write("For the text above: \n")
 					sp.write("Pos Prob: "+ str(round(prob_dist.prob("pos"),2))+'\n')
 					sp.write("Neg Prob: "+ str(round(prob_dist.prob("neg"),2))+'\n')
 					#prob_dist = cl.prob_classify(s)
@@ -143,6 +133,6 @@ blob = TextBlob("The beer was terrible.",classifier=cl)
 print(blob)
 print(blob.classify())
 
-print("Accuracy: {0}".format(cl.accuracy(reviews[201:300])))
+#print("Accuracy: {0}".format(cl.accuracy(reviews[201:300])))
 
-cl.show_informative_features(5)
+#cl.show_informative_features(5)
