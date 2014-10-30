@@ -1,11 +1,11 @@
 import time
 import praw
-import json
+#import json
 
 from textblob import TextBlob
-from textblob.classifiers import NaiveBayesClassifier
+#from textblob.classifiers import NaiveBayesClassifier
 import random
-from nltk.corpus import movie_reviews
+#from nltk.corpus import movie_reviews
 #from nltk.corpus import wordnet
 
 random.seed(1)
@@ -58,5 +58,10 @@ for submission in subreddit.get_hot(limit=5):
 					sp.write("Sentence: "+str(s)+'\n')
 					sp.write("Polarity: "+str(s.sentiment.polarity)+'\n')
 					sp.write("Subjectivity: "+str(s.sentiment.subjectivity)+'\n')
+					for w in s.words:
+						blob2 = TextBlob(w)
+						sp.write("Word: "+str(blob2)+'\n')
+						sp.write("Polarity: "+str(blob2.sentiment.polarity)+'\n')
+						sp.write("Subjectivity: "+str(blob2.sentiment.subjectivity)+'\n')
 			else:
 				print "No body for comment"
