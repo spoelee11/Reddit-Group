@@ -17,16 +17,19 @@ r.config.store_json_result = True
 already_done = set()
 
 #first print
-os.remove("Links_v1.txt")
-fp = open('Links_v1.txt', 'wb')
+if (os.path.isfile('Links_v1.log')):
+    os.remove("Links_v1.log")
+fp = open('Links_v1.log', 'wb')
 
 #second print
-os.remove("SentimentOut_v1.txt")
-sp = open('SentimentOut_v1.txt','wb')
+if (os.path.isfile('SentimentOut_v1.log')):
+    os.remove("SentimentOut_v1.log")
+sp = open('SentimentOut_v1.log','wb')
 
 #data print
-os.remove("dataprint.txt")
-dp = open('dataprint.txt','a')
+if (os.path.isfile('dataprint.log')):
+    os.remove("dataprint.log")
+dp = open('dataprint.log','a')
 
 #lookWords = ['Obama']
 subreddit = r.get_subreddit('Obama')
@@ -44,7 +47,6 @@ for submission in subreddit.get_hot(limit=10):
 		selftxt = submission.selftext.encode('utf-8').strip()
 		fp.write("Body of Page Below: " + '\n' + selftxt + '\n')
 		fp.write("- End of Body - " + '\n')
-		
 		submission2 = r.get_submission(submission_id =submission.id)
 		submission2.replace_more_comments(limit=16,threshold=10)
 		flat_comments = praw.helpers.flatten_tree(submission2.comments)
@@ -61,12 +63,12 @@ for submission in subreddit.get_hot(limit=10):
 				blob = TextBlob(comment.body)
 				sp.write("Comment: "+str(blob)+'\n')
 				#print type(comment.json_dict)
-				#json.dump(comment.json_dict,jp)	
+				#json.dump(comment.json_dict,jp)
 				#print type(comment.json_dict)
 				#jp.write(comment.json_dict)
 				out = comment.body.replace("\n","")
 				out2 = out.replace("&gt;","")
-				dp.write(out2)
+				dp.write(out2.encode('utf8'))
 				dp.write('\n')
 				#prob_dist = cl.prob_classify(blob)
 				#sp.write("Pos Prob: "+ str(prob_dist.prob("pos"))+'\n')
@@ -89,9 +91,10 @@ dp.close()
 
 import re
 
-os.remove("thirdprint.txt")
-dp2 = open("dataprint.txt",'rb')
-tp = open("thirdprint.txt",'a')
+if (os.path.isfile('thirdprint.log')):
+    os.remove("thirdprint.log")
+dp2 = open("dataprint.log",'rb')
+tp = open("thirdprint.log",'a')
 reader = csv.reader(dp2,delimiter="\t")
 for row in reader:
 	comment = str(row).replace('[','').replace(']','').replace('\'','')
@@ -101,7 +104,7 @@ for row in reader:
 	#out2 = out.replace("&gt;","")
 	#dp.write(out2)
 	#dp.write('\n')
-	newString = ''		
+	newString = ''
 	x = []
 	y = ''
 	for s in blob.sentences:
@@ -125,7 +128,7 @@ for row in reader:
 			else:
 				newSentence.append(word)
 		newSent = ' '.join(newSentence)
-		blobsentence = TextBlob(newSent)		
+		blobsentence = TextBlob(newSent)
 		tp.write("Sentence: "+str(blobsentence)+'\n')
 		tp.write("Polarity: "+str(blobsentence.sentiment.polarity)+'\n')
 		tp.write("Subjectivity: "+str(blobsentence.sentiment.subjectivity)+'\n')
@@ -134,5 +137,5 @@ for row in reader:
 			tp.write("Word: "+str(blob2)+'\n')
 			tp.write("Polarity: "+str(blob2.sentiment.polarity)+'\n')
 			tp.write("Subjectivity: "+str(blob2.sentiment.subjectivity)+'\n')
-	
+
 
